@@ -80,7 +80,7 @@ const beamDown = function({
         })
       ])
       .onError(()=> console.error(header.name))
-      .onValue(noop);
+      .onValue(()=> console.log(header.name));
   });
 
   tarStream.on('end', ()=> process.exit());
