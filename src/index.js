@@ -66,7 +66,6 @@ const beamDown = function({
     noop
   );
   
-  //tarStream.on('entry', console.log);
   tarStream.on('entry', function(header, stream, next) {
     stream.once('end', next);
     kefir
@@ -81,7 +80,7 @@ const beamDown = function({
         })
       ])
       .onError(()=> console.error(header.name))
-      .onValue(()=> console.log(header.name));
+      .onValue(noop);
   });
 
   tarStream.on('end', ()=> process.exit());
@@ -98,15 +97,3 @@ const beamDown = function({
   ga_api_token: ACTIONS_RUNTIME_TOKEN,
   ga_run_id: GITHUB_RUN_ID,
 });
-
-
-/*down({
-  ga_api_base_url: process.env["ACTIONS_RUNTIME_URL"],
-  ga_api_token: process.env["ACTIONS_RUNTIME_TOKEN"],
-  ga_run_id: process.env["GITHUB_RUN_ID"],
-  artifact_name: 'my_test',
-});*/
-
-
-//  .then(()=> {
-//}, console.warn);
