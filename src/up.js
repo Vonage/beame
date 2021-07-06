@@ -8,7 +8,7 @@ const
 const
   MB = 1024 * 1024,
   CHUNK_SIZE = 4 * MB,
-  HTTP_CLIENT_CONCURRENCY = 4,
+  HTTP_CLIENT_CONCURRENCY = 1,
   GA_API_VERSION = "6.0-preview";
 
 module.exports = function({
@@ -49,7 +49,6 @@ module.exports = function({
       let
         chunkId = 0,
         totalSize = 0;
-  
   
       //const sourceStream = artifactStream;
       const sourceStream = pipeline(
