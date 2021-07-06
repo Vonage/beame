@@ -1,0 +1,22 @@
+name: 'BeamMe'
+description: 'Upload/Download whole file-system portions via artifact'
+inputs:
+  artifact:
+    description: 'The artifact name to use'
+    required: false
+    default: 'beam_me_artifact'
+  direction:
+    description: '"up" or "down"'
+    required: false
+    default: 'up'
+  pattern:
+    description: 'Glob pattern to beam up'
+    required: false
+    default: './**'
+  folder:
+    description: 'The path pattern to upload or base folder to download'
+    required: true
+    default: ${{ github.workspace }}
+runs:
+  using: 'node12'
+  main: './dist/index.js'
