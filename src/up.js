@@ -20,14 +20,18 @@ module.exports = function({
   artifact_stream: artifactStream
 }){
   
+  const
+    httpsAgent = new HttpAgent.HttpsAgent(),
+    httpAgent = new HttpAgent();
+  
   const artifactBaseUrl = `${gaApiBaseUrl}_apis/pipelines/workflows/${gaRunId}/artifacts`;
   const ghaStreamClient = (options)=>
     kefir
       .fromNodeCallback((cb)=> {
         got({
           agent: {
-            https: new HttpAgent.HttpsAgent(),
-            http: new HttpAgent()
+            https: httpsAgent,
+            http: httpAgent
           },
           throwHttpErrors: true,
           ...options,
