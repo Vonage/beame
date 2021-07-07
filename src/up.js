@@ -7,7 +7,7 @@ const
 
 const
   MB = 1024 * 1024,
-  CHUNK_SIZE = 40 * MB,
+  CHUNK_SIZE = 4 * MB,
   HTTP_CLIENT_CONCURRENCY = 4,
   GA_API_VERSION = "6.0-preview";
 
