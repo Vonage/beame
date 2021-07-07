@@ -8,6 +8,8 @@ const
   { join: joinPath } = require('path'),
   { always, get, noop } = require('lodash/fp');
 
+console.log('Test Version');
+
 const QUEUE_BUFFER = 1000;
 
 module.exports = function({
