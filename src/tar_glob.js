@@ -8,7 +8,7 @@ const
   { join: joinPath } = require('path'),
   { always, get, noop } = require('lodash/fp');
 
-console.log('Test Version');
+console.log('Test Version 2');
 
 const QUEUE_BUFFER = 1000; //
 
