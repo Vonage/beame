@@ -4,7 +4,7 @@ const
   { pipeline } = require('stream'),
   { noop, always } = require('lodash/fp'),
   streamChunker = require('stream-chunker'),
-  { HttpsAgent, HttpAgent } = require('agentkeepalive');
+  HttpAgent = require('agentkeepalive');
 
 const
   MB = 1024 * 1024,
@@ -26,7 +26,7 @@ module.exports = function({
       .fromNodeCallback((cb)=> {
         got({
           agent: {
-            https: new HttpsAgent(),
+            https: new HttpAgent.HttpsAgent(),
             http: new HttpAgent()
           },
           throwHttpErrors: true,
