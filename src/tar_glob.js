@@ -10,7 +10,7 @@ const
 
 console.log('Test Version 3');
 
-const QUEUE_BUFFER = 100; //
+const QUEUE_BUFFER = 1000;
 
 module.exports = function({
   globs = [],
@@ -19,7 +19,7 @@ module.exports = function({
   
   const
     pack = tar.pack(),
-    outputStream = pipeline(pack, createGzip(), noop);
+    outputStream = pipeline(pack, createGzip({ level: 1 }), noop);
   
   kefir
     .merge([].concat(globs).map((globPattern)=> {
