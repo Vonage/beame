@@ -8,9 +8,9 @@ const
   { join: joinPath } = require('path'),
   { always, get, noop } = require('lodash/fp');
 
-console.log('Test Version 2');
+console.log('Test Version 3');
 
-const QUEUE_BUFFER = 1000; //
+const QUEUE_BUFFER = 100; //
 
 module.exports = function({
   globs = [],
