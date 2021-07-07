@@ -13,6 +13,7 @@
   "dependencies": {
     "@actions/core": "^1.4.0",
     "@actions/github": "^5.0.0",
+    "agentkeepalive": "^4.1.4",
     "glob": "^7.1.7",
     "got": "^11.8.2",
     "kefir": "^3.8.8",

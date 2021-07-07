@@ -3,7 +3,8 @@ const
   kefir = require('kefir'),
   { pipeline } = require('stream'),
   { noop, always } = require('lodash/fp'),
-  streamChunker = require('stream-chunker');
+  streamChunker = require('stream-chunker'),
+  { HttpsAgent } = require('agentkeepalive');
 
 const
   MB = 1024 * 1024,
@@ -24,6 +25,9 @@ module.exports = function({
     kefir
       .fromNodeCallback((cb)=> {
         got({
+          agent: {
+            https: new HttpsAgent()
+          },
           throwHttpErrors: true,
           ...options,
           headers: {
