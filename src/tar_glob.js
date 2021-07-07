@@ -8,7 +8,7 @@ const
   { join: joinPath } = require('path'),
   { always, get, noop } = require('lodash/fp');
 
-console.log('Test Version 3');
+console.time('Compression');
 
 const QUEUE_BUFFER = 1000;
 
@@ -55,7 +55,10 @@ module.exports = function({
       );
     })
     .takeErrors(1)
-    .onEnd(()=> pack.finalize());
+    .onEnd(()=> {
+      console.timeEnd('Compression');
+      pack.finalize();
+    });
   
   return outputStream;
 };

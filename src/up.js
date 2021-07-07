@@ -8,7 +8,7 @@ const
 const
   MB = 1024 * 1024,
   CHUNK_SIZE = 4 * MB,
-  HTTP_CLIENT_CONCURRENCY = 4,
+  HTTP_CLIENT_CONCURRENCY = 10,
   GA_API_VERSION = "6.0-preview";
 
 module.exports = function({
@@ -79,7 +79,7 @@ module.exports = function({
                 method: "PUT",
                 searchParams: { "itemPath": `/${artifactName}/${ ["part", chunkId++].join('_') }.bin` },
                 body: chunk
-              });
+              }).map(always(chunkId));
             }, HTTP_CLIENT_CONCURRENCY),
           ghaStreamClient({
             url: artifactBaseUrl,
@@ -88,9 +88,10 @@ module.exports = function({
             searchParams: { "artifactName": artifactName },
             resolveBodyOnly: true,
             responseType: "json",
-          })
+          }).map(always('Patched'))
         ]);
     })
+    .spy()
     .beforeEnd(always(true))
     .takeErrors(1)
     .toPromise();
