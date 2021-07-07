@@ -9,7 +9,7 @@ const
 const
   MB = 1024 * 1024,
   CHUNK_SIZE = 4 * MB,
-  HTTP_CLIENT_CONCURRENCY = 1,
+  HTTP_CLIENT_CONCURRENCY = 5,
   GA_API_VERSION = "6.0-preview";
 
 module.exports = function({

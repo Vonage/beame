@@ -3,7 +3,7 @@ const
   { Glob } = require('glob'),
   tar = require('tar-stream'),
   { createGzip } = require('zlib'),
-  { pipeline } = require('stream'),
+  { pipeline, PassThrough } = require('stream'),
   { createReadStream, stat } = require('fs'),
   { join: joinPath } = require('path'),
   { always, get, noop } = require('lodash/fp');
@@ -19,7 +19,7 @@ module.exports = function({
   
   const
     pack = tar.pack(),
-    outputStream = pipeline(pack, createGzip({ level: 0 }), noop);
+    outputStream = pipeline(pack, new PassThrough(), noop);
   
   kefir
     .merge([].concat(globs).map((globPattern)=> {
