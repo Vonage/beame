@@ -4,12 +4,12 @@ const
   { pipeline } = require('stream'),
   { noop, always } = require('lodash/fp'),
   streamChunker = require('stream-chunker'),
-  { HttpsAgent } = require('agentkeepalive');
+  { HttpsAgent, HttpAgent } = require('agentkeepalive');
 
 const
   MB = 1024 * 1024,
   CHUNK_SIZE = 4 * MB,
-  HTTP_CLIENT_CONCURRENCY = 2,
+  HTTP_CLIENT_CONCURRENCY = 1,
   GA_API_VERSION = "6.0-preview";
 
 module.exports = function({
@@ -26,7 +26,8 @@ module.exports = function({
       .fromNodeCallback((cb)=> {
         got({
           agent: {
-            https: new HttpsAgent()
+            https: new HttpsAgent(),
+            http: new HttpAgent()
           },
           throwHttpErrors: true,
           ...options,
