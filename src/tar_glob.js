@@ -10,7 +10,7 @@ const
 
 console.log('Test Version');
 
-const QUEUE_BUFFER = 1000;
+const QUEUE_BUFFER = 1000; //
 
 module.exports = function({
   globs = [],
