@@ -28,7 +28,7 @@ module.exports = function({
         .fromEvents(globber, 'match')
         .takeUntilBy(kefir.fromEvents(globber, 'end'));
     }))
-    .bufferWithTimeOrCount(QUEUE_BUFFER, { flushOnEnd: true })
+    .bufferWithCount(QUEUE_BUFFER, { flushOnEnd: true })
     .flatMapConcat((relativePaths)=> {
       return kefir
         .concat(
