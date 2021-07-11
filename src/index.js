@@ -43,7 +43,7 @@ const beamUp = function({
         globs: [filePattern],
         base_folder: baseFolder
       }),
-      artifact_chunk_size: 10 * MB
+      artifact_chunk_size: 3 * MB
     })
     .then(()=> console.log('Uploaded successfully!'))
     .catch(console.error);
