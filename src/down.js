@@ -49,6 +49,7 @@ module.exports = function({
       orderBy([pipe(get('path'), (str)=> +(str.match(/([0-9]+)\.bin$/)[1]))], ['asc']),
       map(get('contentLocation'))
     ))
+    .spy()
     .flatMapConcat((url)=>{
       return ghaStreamClient({
         url,
