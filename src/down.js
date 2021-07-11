@@ -4,9 +4,7 @@ const
   { pipeline, PassThrough } = require('stream'),
   { pipe, filter, get, map, orderBy, equals } = require('lodash/fp');
 
-const
-  HTTP_CLIENT_CONCURRENCY = 4,
-  GA_API_VERSION = "6.0-preview";
+const GA_API_VERSION = "6.0-preview";
 
 module.exports = function({
   ga_api_base_url: gaApiBaseUrl,
@@ -51,7 +49,6 @@ module.exports = function({
       orderBy([pipe(get('path'), (str)=> +(str.match(/([0-9]+)\.bin$/)[1]))], ['asc']),
       map(get('contentLocation'))
     ))
-    .spy()
     .flatMapConcat((url)=>{
       return ghaStreamClient({
         url,
