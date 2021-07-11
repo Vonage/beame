@@ -43,6 +43,7 @@ module.exports = function({
         responseType: "json"
       })
     )
+    .spy()
     .flatten(pipe(
       get('value'),
       filter(pipe(get('itemType'), equals('file'))),
