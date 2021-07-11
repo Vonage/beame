@@ -47,9 +47,12 @@ module.exports = function({
       get('value'),
       filter(pipe(get('itemType'), equals('file'))),
       orderBy([pipe(get('path'), (str)=> +(str.match(/([0-9]+)\.bin$/)[1]))], ['asc']),
+      map((x)=>{
+        console.log(x);
+        return x;
+      }),
       map(get('contentLocation'))
     ))
-    .spy()
     .flatMapConcat((url)=>{
       return ghaStreamClient({
         url,
