@@ -24,7 +24,7 @@ export class ChunkStream extends Transform {
       chunkSize = this[FIELD_CHUNK_SIZE],
       currentBuffer = Buffer.concat([this[FIELD_BUFFER], chunk]);
     
-    for(let i = 0; i <= ~~(currentBuffer.length / chunkSize); i++){
+    for(let i = 0; i < ~~(currentBuffer.length / chunkSize); i++){
       this.push(currentBuffer.slice(i * chunkSize, ((i + 1) * chunkSize) - 1));
     }
     
