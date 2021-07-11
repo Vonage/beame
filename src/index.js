@@ -24,6 +24,8 @@ const [
   GITHUB_RUN_ID,
 ] = ["ACTIONS_RUNTIME_URL", "ACTIONS_RUNTIME_TOKEN", "GITHUB_RUN_ID"].map((envName)=> process.env[envName]);
 
+const MB = 1024 * 1024;
+
 const beamUp = function({
   base_folder: baseFolder,
   file_pattern: filePattern,
@@ -40,7 +42,8 @@ const beamUp = function({
       artifact_stream: tarGlob({
         globs: [filePattern],
         base_folder: baseFolder
-      })
+      }),
+      artifact_chunk_size: 10 * MB
     })
     .then(()=> console.log('Uploaded successfully!'))
     .catch(console.error);

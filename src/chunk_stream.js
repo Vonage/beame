@@ -32,7 +32,7 @@ export class ChunkStream extends Transform {
   }
   
   _flush(callback){
-    this.push(this[FIELD_BUFFER]);
+    if(this[FIELD_BUFFER].length > 0) this.push(this[FIELD_BUFFER]);
     callback();
   }
   

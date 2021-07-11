@@ -101,6 +101,7 @@ module.exports = function({
           }).map(always('Patched'))
         ]);
     })
+    .spy()
     .beforeEnd(always(true))
     .takeErrors(1)
     .toPromise();
