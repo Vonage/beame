@@ -66,7 +66,7 @@ const beamDown = function({
     }),
     createGunzip(),
     tar.extract(),
-    noop
+    (err)=> console.log('Done!', err)
   );
   
   tarStream.on('entry', function(header, stream, next) {
@@ -86,7 +86,7 @@ const beamDown = function({
       .onValue(()=> console.log(header.name));
   });
 
-  tarStream.on('end', ()=> process.exit());
+  //tarStream.on('end', ()=> process.exit());
 };
 
 (({
