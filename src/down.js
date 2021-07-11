@@ -47,10 +47,10 @@ module.exports = function({
       get('value'),
       filter(pipe(get('itemType'), equals('file'))),
       orderBy([pipe(get('path'), (str)=> +(str.match(/([0-9]+)\.bin$/)[1]))], ['asc']),
-      map((x)=>{
+      /*map((x)=>{
         console.log(x);
         return x;
-      }),
+      }),*/
       map(get('contentLocation'))
     ))
     .flatMapConcat((url)=>{
@@ -61,9 +61,12 @@ module.exports = function({
         headers: {
           "Accept": `application/octet-stream;api-version=${GA_API_VERSION}`
         }
+      })
+      .onValue((buffer)=> {
+        console.log('Writing', url);
+        inStream.write(buffer);
       });
     })
-    .onValue((buffer)=> inStream.write(buffer))
     .onEnd(()=> inStream.end());
   
   return inStream;
