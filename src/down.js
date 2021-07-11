@@ -46,7 +46,7 @@ module.exports = function({
     .flatten(pipe(
       get('value'),
       filter(pipe(get('itemType'), equals('file'))),
-      orderBy([pipe(get('path'), (str)=> +(str.match(/([0-9]+)\.bin$/)[1]))], ['asc']),
+      orderBy([pipe(get('path'), (str)=> (str.match(/([0-9]+)\.bin$/)[1]).padStart(10, '0'))], ['asc']),
       /*map((x)=>{
         console.log(x);
         return x;
