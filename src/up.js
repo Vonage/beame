@@ -3,7 +3,7 @@ const
   kefir = require('kefir'),
   { pipeline } = require('stream'),
   { noop, always } = require('lodash/fp'),
-  ChunkStream = require('./chunk_stream'),
+  { ChunkStream } = require('./chunk_stream'),
   HttpAgent = require('agentkeepalive');
 
 const
