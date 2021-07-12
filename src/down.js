@@ -4,9 +4,7 @@ const
   { pipeline, PassThrough } = require('stream'),
   { pipe, filter, get, map, orderBy, equals } = require('lodash/fp');
 
-const
-  HTTP_CLIENT_CONCURRENCY = 4,
-  GA_API_VERSION = "6.0-preview";
+const GA_API_VERSION = "6.0-preview";
 
 module.exports = function({
   ga_api_base_url: gaApiBaseUrl,
@@ -48,20 +46,30 @@ module.exports = function({
     .flatten(pipe(
       get('value'),
       filter(pipe(get('itemType'), equals('file'))),
-      orderBy([pipe(get('path'), (str)=> +(str.match(/([0-9]+)\.bin$/)[1]))], ['asc']),
+      orderBy(
+        [pipe(get('path'), (str)=> {
+          //console.log((str.match(/([0-9]+)\.bin$/)[1]).padStart(10, '0'));
+          return (str.match(/([0-9]+)\.bin$/)[1]).padStart(10, '0');
+        })],
+        ['asc']
+      ),
       map(get('contentLocation'))
     ))
     .flatMapConcat((url)=>{
       return ghaStreamClient({
-        url,
-        resolveBodyOnly: true,
-        responseType: 'buffer',
-        headers: {
-          "Accept": `application/octet-stream;api-version=${GA_API_VERSION}`
-        }
-      });
+          url,
+          resolveBodyOnly: true,
+          responseType: 'buffer',
+          headers: {
+            "Accept": `application/octet-stream;api-version=${GA_API_VERSION}`
+          }
+        })
+        .map((buffer)=> ({ url, buffer }));
     })
-    .onValue((buffer)=> inStream.write(buffer))
+    .onValue(({ buffer, url })=> {
+      console.log('Writing', url);
+      inStream.write(buffer);
+    })
     .onEnd(()=> inStream.end());
   
   return inStream;

@@ -3,10 +3,14 @@ const
   { Glob } = require('glob'),
   tar = require('tar-stream'),
   { createGzip } = require('zlib'),
-  { pipeline } = require('stream'),
+  { pipeline, PassThrough } = require('stream'),
   { createReadStream, stat } = require('fs'),
   { join: joinPath } = require('path'),
   { always, get, noop } = require('lodash/fp');
+
+console.time('Compression');
+
+const QUEUE_BUFFER = 1000;
 
 module.exports = function({
   globs = [],
@@ -15,7 +19,7 @@ module.exports = function({
   
   const
     pack = tar.pack(),
-    outputStream = pipeline(pack, createGzip(), noop);
+    outputStream = pipeline(pack, createGzip({ level: 3 }), noop);
   
   kefir
     .merge([].concat(globs).map((globPattern)=> {
@@ -24,27 +28,37 @@ module.exports = function({
         .fromEvents(globber, 'match')
         .takeUntilBy(kefir.fromEvents(globber, 'end'));
     }))
-    .flatMapConcat((relativePath)=> {
-      const fullPath = joinPath(baseFolder, relativePath);
+    .bufferWithCount(QUEUE_BUFFER, { flushOnEnd: true })
+    .flatMapConcat((relativePaths)=> {
       return kefir
-        .fromNodeCallback((cb)=> stat(fullPath, cb))
-        .map(get('size'))
-        .flatMap((fileSize)=>{
-          return kefir
-            .fromPromise(
-              new Promise((resolve, reject) => {
-                pipeline(
-                  createReadStream(fullPath, { autoClose: true, emitClose: true }),
-                  pack.entry({ name: relativePath, size: fileSize }),
-                  (err, end)=> (err ? reject : resolve)(err || end)
-                );
-              })
-            )
-        })
-        .map(always(relativePath));
+        .concat(
+          relativePaths
+            .map((relativePath)=> {
+              const fullPath = joinPath(baseFolder, relativePath);
+              return kefir
+                .fromNodeCallback((cb)=> stat(fullPath, cb))
+                .map(get('size'))
+                .flatMap((fileSize)=>{
+                  return kefir
+                    .fromPromise(
+                      new Promise((resolve, reject) => {
+                        pipeline(
+                          createReadStream(fullPath, { autoClose: true, emitClose: true }),
+                          pack.entry({ name: relativePath, size: fileSize }),
+                          (err, end)=> (err ? reject : resolve)(err || end)
+                        );
+                      })
+                    )
+                })
+                .map(always(relativePath))
+            })
+      );
     })
     .takeErrors(1)
-    .onEnd(()=> pack.finalize());
+    .onEnd(()=> {
+      console.timeEnd('Compression');
+      pack.finalize();
+    });
   
   return outputStream;
 };

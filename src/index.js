@@ -24,6 +24,8 @@ const [
   GITHUB_RUN_ID,
 ] = ["ACTIONS_RUNTIME_URL", "ACTIONS_RUNTIME_TOKEN", "GITHUB_RUN_ID"].map((envName)=> process.env[envName]);
 
+const MB = 1024 * 1024;
+
 const beamUp = function({
   base_folder: baseFolder,
   file_pattern: filePattern,
@@ -40,7 +42,9 @@ const beamUp = function({
       artifact_stream: tarGlob({
         globs: [filePattern],
         base_folder: baseFolder
-      })
+      }),
+      artifact_chunk_size: 4 * MB,
+      http_concurrency: 1
     })
     .then(()=> console.log('Uploaded successfully!'))
     .catch(console.error);
@@ -63,7 +67,7 @@ const beamDown = function({
     }),
     createGunzip(),
     tar.extract(),
-    noop
+    (err)=> console.log('Done!', err)
   );
   
   tarStream.on('entry', function(header, stream, next) {
@@ -80,10 +84,10 @@ const beamDown = function({
         })
       ])
       .onError(()=> console.error(header.name))
-      .onValue(noop);
+      .onValue(()=> console.log(header.name));
   });
 
-  tarStream.on('end', ()=> process.exit());
+  //tarStream.on('end', ()=> process.exit());
 };
 
 (({

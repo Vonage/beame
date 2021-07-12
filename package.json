@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ncc build ./src/index.js -m -o ./dist"
   },
   "keywords": [],
   "author": "",
@@ -12,11 +13,11 @@
   "dependencies": {
     "@actions/core": "^1.4.0",
     "@actions/github": "^5.0.0",
+    "agentkeepalive": "^4.1.4",
     "glob": "^7.1.7",
     "got": "^11.8.2",
     "kefir": "^3.8.8",
     "lodash": "^4.17.21",
-    "stream-chunker": "^1.2.8",
     "tar-stream": "^2.2.0"
   }
 }
