@@ -6,10 +6,21 @@ const
   tarGlob = require('./tar_glob'),
   kefir = require('kefir'),
   tar = require('tar-stream'),
+  { fork } = require('child_process'),
   { createGunzip } = require('zlib'),
   { noop } = require('lodash/fp'),
   { createWriteStream, mkdir } = require('fs'),
   { join: joinPath, dirname } = require('path');
+
+// Forked routine
+const [isFork, filePattern, baseFolder] = process.argv.slice(2);
+if(isFork === 'fork'){
+  tarGlob({
+    globs: [filePattern],
+    base_folder: baseFolder
+  }).pipe(process.stdout);
+  return
+}
 
 const [
   directionInput,
@@ -39,10 +50,11 @@ const beamUp = function({
       ga_api_token: gaApiToken,
       ga_run_id: gaRunId,
       artifact_name: artifactName,
-      artifact_stream: tarGlob({
+      artifact_stream: fork(__filename, [filePattern, baseFolder], { silent: true }).stdout,
+      /*artifact_stream: tarGlob({
         globs: [filePattern],
         base_folder: baseFolder
-      }),
+      }),*/
       artifact_chunk_size: 4 * MB,
       http_concurrency: 1
     })
