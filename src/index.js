@@ -12,14 +12,19 @@ const
   { createWriteStream, mkdir } = require('fs'),
   { join: joinPath, dirname } = require('path');
 
-// Forked routine
 const [isFork, filePattern, baseFolder] = process.argv.slice(2);
+
 if(isFork === 'fork'){
-  tarGlob({
-    globs: [filePattern],
-    base_folder: baseFolder
-  }).pipe(process.stdout);
-  return
+  pipeline(
+    tarGlob({
+      globs: [filePattern],
+      base_folder: baseFolder
+    }),
+    process.stdout,
+    (err)=> process.exit(err ? 1 : 0)
+  );
+  
+  return;
 }
 
 const [
@@ -45,12 +50,17 @@ const beamUp = function({
   ga_api_token: gaApiToken,
   ga_run_id: gaRunId,
 }){
+  
+  const tarStream = fork(__filename, ['fork', filePattern, baseFolder], { silent: true }).stdout;
+  //tarStream.on('data', (buf)=> console.log(buf.length, buf));
+  //tarStream.on('end', ()=> console.log('end'));
+  
   up({
       ga_api_base_url: gaApiBaseUrl,
       ga_api_token: gaApiToken,
       ga_run_id: gaRunId,
       artifact_name: artifactName,
-      artifact_stream: fork(__filename, [filePattern, baseFolder], { silent: true }).stdout,
+      artifact_stream: tarStream,
       /*artifact_stream: tarGlob({
         globs: [filePattern],
         base_folder: baseFolder
@@ -114,3 +124,5 @@ const beamDown = function({
   ga_api_token: ACTIONS_RUNTIME_TOKEN,
   ga_run_id: GITHUB_RUN_ID,
 });
+
+// Test
