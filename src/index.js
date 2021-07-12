@@ -60,7 +60,7 @@ const beamUp = function({
       artifact_name: artifactName,
       artifact_stream: tarStream,
       artifact_chunk_size: 4 * MB,
-      http_concurrency: 3
+      http_concurrency: 1
     })
     .then(()=> console.log('Uploaded successfully!'))
     .catch(console.error);
