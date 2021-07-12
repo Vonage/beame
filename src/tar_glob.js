@@ -21,7 +21,7 @@ module.exports = function({
   
   kefir
     .merge([].concat(globs).map((globPattern)=> {
-      const globber = new Glob(globPattern, { cwd: baseFolder, nodir: true });
+      const globber = new Glob(globPattern, { cwd: baseFolder, nodir: true, dot: true });
       return kefir
         .fromEvents(globber, 'match')
         .takeUntilBy(kefir.fromEvents(globber, 'end'));

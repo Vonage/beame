@@ -60,7 +60,7 @@ const beamUp = function({
       artifact_name: artifactName,
       artifact_stream: tarStream,
       artifact_chunk_size: 4 * MB,
-      http_concurrency: 2
+      http_concurrency: 3
     })
     .then(()=> console.log('Uploaded successfully!'))
     .catch(console.error);
@@ -103,7 +103,7 @@ const beamDown = function({
         })
       ])
       .onError(()=> console.error(header.name))
-      .onValue(()=> console.log(header.name));
+      .onValue(noop);
   });
 };
 
@@ -118,5 +118,3 @@ const beamDown = function({
   ga_api_token: ACTIONS_RUNTIME_TOKEN,
   ga_run_id: GITHUB_RUN_ID,
 });
-
-// Test
