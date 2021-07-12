@@ -13,14 +13,16 @@ const
   { join: joinPath, dirname } = require('path');
 
 // Forked routine
-const [isFork, filePattern, baseFolder] = process.argv.slice(2);
-if(isFork === 'fork'){
-  tarGlob({
-    globs: [filePattern],
-    base_folder: baseFolder
-  }).pipe(process.stdout);
-  return
-}
+(function([isFork, filePattern, baseFolder]){
+  if(isFork === 'fork'){
+    console.log('FORKED!', filePattern, baseFolder);
+    process.exit(0);
+    tarGlob({
+      globs: [filePattern],
+      base_folder: baseFolder
+    }).pipe(process.stdout);
+  }
+})(process.argv.slice(2));
 
 const [
   directionInput,
@@ -50,7 +52,7 @@ const beamUp = function({
       ga_api_token: gaApiToken,
       ga_run_id: gaRunId,
       artifact_name: artifactName,
-      artifact_stream: fork(__filename, [filePattern, baseFolder], { silent: false }).stdout,
+      artifact_stream: fork(__filename, ['fork', filePattern, baseFolder], { silent: false }).stdout,
       /*artifact_stream: tarGlob({
         globs: [filePattern],
         base_folder: baseFolder
