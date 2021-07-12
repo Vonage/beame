@@ -52,8 +52,6 @@ const beamUp = function({
 }){
   
   const tarStream = fork(__filename, ['fork', filePattern, baseFolder], { silent: true }).stdout;
-  //tarStream.on('data', (buf)=> console.log(buf.length, buf));
-  //tarStream.on('end', ()=> console.log('end'));
   
   up({
       ga_api_base_url: gaApiBaseUrl,
@@ -61,10 +59,6 @@ const beamUp = function({
       ga_run_id: gaRunId,
       artifact_name: artifactName,
       artifact_stream: tarStream,
-      /*artifact_stream: tarGlob({
-        globs: [filePattern],
-        base_folder: baseFolder
-      }),*/
       artifact_chunk_size: 4 * MB,
       http_concurrency: 1
     })
