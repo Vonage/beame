@@ -52,8 +52,8 @@ const beamUp = function({
 }){
   
   const tarStream = fork(__filename, ['fork', filePattern, baseFolder], { silent: true }).stdout;
-  tarStream.on('data', (buf)=> console.log(buf.length, buf));
-  tarStream.on('end', ()=> console.log('end'));
+  //tarStream.on('data', (buf)=> console.log(buf.length, buf));
+  //tarStream.on('end', ()=> console.log('end'));
   
   up({
       ga_api_base_url: gaApiBaseUrl,
