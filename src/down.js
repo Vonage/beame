@@ -63,9 +63,9 @@ module.exports = function({
         headers: {
           "Accept": `application/octet-stream;api-version=${GA_API_VERSION}`
         }
-      });
+      }).map((buffer)=> ({ url, buffer }));
     })
-    .onValue((buffer)=> {
+    .onValue(({ buffer, url })=> {
       console.log('Writing', url);
       inStream.write(buffer);
     })
