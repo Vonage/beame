@@ -15,11 +15,14 @@ const
 // Forked routine
 (function([isFork, filePattern, baseFolder]){
   if(isFork === 'fork'){
-    tarGlob({
-      globs: [filePattern],
-      base_folder: baseFolder
-    }).pipe(process.stdout);
-    process.exit(0);
+    pipeline(
+      tarGlob({
+        globs: [filePattern],
+        base_folder: baseFolder
+      }),
+      process.stdout,
+      (err)=> process.exit(err ? 1 : 0)
+    );
   }
 })(process.argv.slice(2));
 
