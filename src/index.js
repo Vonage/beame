@@ -49,6 +49,9 @@ const beamUp = function({
   ga_api_token: gaApiToken,
   ga_run_id: gaRunId,
 }){
+  
+  fork(__filename, ['fork', filePattern, baseFolder], { silent: true }).stdout.pipe(process.stdout);
+  
   up({
       ga_api_base_url: gaApiBaseUrl,
       ga_api_token: gaApiToken,
