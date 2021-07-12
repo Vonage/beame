@@ -50,7 +50,7 @@ const beamUp = function({
       ga_api_token: gaApiToken,
       ga_run_id: gaRunId,
       artifact_name: artifactName,
-      artifact_stream: fork(__filename, [filePattern, baseFolder], { silent: true }).stdout,
+      artifact_stream: fork(__filename, [filePattern, baseFolder], { silent: false }).stdout,
       /*artifact_stream: tarGlob({
         globs: [filePattern],
         base_folder: baseFolder
