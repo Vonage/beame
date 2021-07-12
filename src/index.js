@@ -15,12 +15,11 @@ const
 // Forked routine
 (function([isFork, filePattern, baseFolder]){
   if(isFork === 'fork'){
-    console.log('FORKED!', filePattern, baseFolder);
-    process.exit(0);
     tarGlob({
       globs: [filePattern],
       base_folder: baseFolder
     }).pipe(process.stdout);
+    process.exit(0);
   }
 })(process.argv.slice(2));
 
@@ -52,7 +51,7 @@ const beamUp = function({
       ga_api_token: gaApiToken,
       ga_run_id: gaRunId,
       artifact_name: artifactName,
-      artifact_stream: fork(__filename, ['fork', filePattern, baseFolder], { silent: false }).stdout,
+      artifact_stream: fork(__filename, ['fork', filePattern, baseFolder], { silent: true }).stdout,
       /*artifact_stream: tarGlob({
         globs: [filePattern],
         base_folder: baseFolder
