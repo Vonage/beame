@@ -12,19 +12,20 @@ const
   { createWriteStream, mkdir } = require('fs'),
   { join: joinPath, dirname } = require('path');
 
-// Forked routine
-(function([isFork, filePattern, baseFolder]){
-  if(isFork === 'fork'){
-    pipeline(
-      tarGlob({
-        globs: [filePattern],
-        base_folder: baseFolder
-      }),
-      process.stdout,
-      (err)=> process.exit(err ? 1 : 0)
-    );
-  }
-})(process.argv.slice(2));
+const [isFork, filePattern, baseFolder] = process.argv.slice(2);
+
+if(isFork === 'fork'){
+  pipeline(
+    tarGlob({
+      globs: [filePattern],
+      base_folder: baseFolder
+    }),
+    process.stdout,
+    (err)=> process.exit(err ? 1 : 0)
+  );
+  
+  return;
+}
 
 const [
   directionInput,
