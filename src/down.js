@@ -53,10 +53,6 @@ module.exports = function({
         })],
         ['asc']
       ),
-      /*map((x)=>{
-        console.log(x);
-        return x;
-      }),*/
       map(get('contentLocation'))
     ))
     .flatMapConcat((url)=>{
@@ -67,11 +63,11 @@ module.exports = function({
         headers: {
           "Accept": `application/octet-stream;api-version=${GA_API_VERSION}`
         }
-      })
-      .onValue((buffer)=> {
-        console.log('Writing', url);
-        inStream.write(buffer);
       });
+    })
+    .onValue((buffer)=> {
+      console.log('Writing', url);
+      inStream.write(buffer);
     })
     .onEnd(()=> inStream.end());
   
