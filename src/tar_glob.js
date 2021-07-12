@@ -19,7 +19,7 @@ module.exports = function({
   
   const
     pack = tar.pack(),
-    outputStream = pipeline(pack, createGzip({ level: 1 }), noop);
+    outputStream = pipeline(pack, createGzip({ level: 0 }), noop);
   
   kefir
     .merge([].concat(globs).map((globPattern)=> {
