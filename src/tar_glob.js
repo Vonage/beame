@@ -3,12 +3,10 @@ const
   { Glob } = require('glob'),
   tar = require('tar-stream'),
   { createGzip } = require('zlib'),
-  { pipeline, PassThrough } = require('stream'),
+  { pipeline } = require('stream'),
   { createReadStream, stat } = require('fs'),
   { join: joinPath } = require('path'),
   { always, get, noop } = require('lodash/fp');
-
-console.time('Compression');
 
 const QUEUE_BUFFER = 1000;
 
@@ -55,10 +53,7 @@ module.exports = function({
       );
     })
     .takeErrors(1)
-    .onEnd(()=> {
-      console.timeEnd('Compression');
-      pack.finalize();
-    });
+    .onEnd(()=> pack.finalize());
   
   return outputStream;
 };
