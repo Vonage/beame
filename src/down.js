@@ -48,7 +48,7 @@ module.exports = function({
       filter(pipe(get('itemType'), equals('file'))),
       orderBy(
         [pipe(get('path'), (str)=> {
-          console.log((str.match(/([0-9]+)\.bin$/)[1]).padStart(10, '0'));
+          //console.log((str.match(/([0-9]+)\.bin$/)[1]).padStart(10, '0'));
           return (str.match(/([0-9]+)\.bin$/)[1]).padStart(10, '0');
         })],
         ['asc']
@@ -57,13 +57,14 @@ module.exports = function({
     ))
     .flatMapConcat((url)=>{
       return ghaStreamClient({
-        url,
-        resolveBodyOnly: true,
-        responseType: 'buffer',
-        headers: {
-          "Accept": `application/octet-stream;api-version=${GA_API_VERSION}`
-        }
-      }).map((buffer)=> ({ url, buffer }));
+          url,
+          resolveBodyOnly: true,
+          responseType: 'buffer',
+          headers: {
+            "Accept": `application/octet-stream;api-version=${GA_API_VERSION}`
+          }
+        })
+        .map((buffer)=> ({ url, buffer }));
     })
     .onValue(({ buffer, url })=> {
       console.log('Writing', url);
