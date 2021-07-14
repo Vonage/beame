@@ -90,6 +90,7 @@ const beamDown = function({
   );
   
   tarStream.on('entry', function(header, stream, next) {
+    console.log(header);
     stream.once('end', next);
     kefir
       .concat([
