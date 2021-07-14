@@ -6,7 +6,7 @@ const
   { pipeline } = require('stream'),
   { createReadStream, stat } = require('fs'),
   { join: joinPath } = require('path'),
-  { always, get, noop } = require('lodash/fp');
+  { always, noop, at } = require('lodash/fp');
 
 const QUEUE_BUFFER = 1000;
 
@@ -35,14 +35,15 @@ module.exports = function({
               const fullPath = joinPath(baseFolder, relativePath);
               return kefir
                 .fromNodeCallback((cb)=> stat(fullPath, cb))
-                .map(get('size'))
-                .flatMap((fileSize)=>{
+                .map(at(['size', 'mode']))
+                .flatMap(([fileSize, fileMode])=>{
+                  console.log(fileMode);
                   return kefir
                     .fromPromise(
                       new Promise((resolve, reject) => {
                         pipeline(
                           createReadStream(fullPath, { autoClose: true, emitClose: true }),
-                          pack.entry({ name: relativePath, size: fileSize }),
+                          pack.entry({ name: relativePath, size: fileSize, mode: fileMode }),
                           (err, end)=> (err ? reject : resolve)(err || end)
                         );
                       })

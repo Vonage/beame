@@ -97,7 +97,7 @@ const beamDown = function({
         kefir.fromNodeCallback((cb)=> {
           pipeline(
             stream,
-            createWriteStream(joinPath(baseFolder, header.name)),
+            createWriteStream(joinPath(baseFolder, header.name), { mode: header.mode }),
             cb
           );
         })
