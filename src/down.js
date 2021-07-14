@@ -63,7 +63,10 @@ module.exports = function({
         })
         .map((buffer)=> ({ url, buffer }));
     })
-    .onValue(({ buffer, url })=> inStream.write(buffer))
+    .onValue(({ buffer, url })=> {
+      console.log('writing', url);
+      inStream.write(buffer);
+    })
     .onError((err)=> inStream.emit('error', err))
     .onEnd(()=> inStream.end());
   
