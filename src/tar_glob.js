@@ -37,7 +37,6 @@ module.exports = function({
                 .fromNodeCallback((cb)=> stat(fullPath, cb))
                 .map(at(['size', 'mode']))
                 .flatMap(([fileSize, fileMode])=>{
-                  console.log(fileMode);
                   return kefir
                     .fromPromise(
                       new Promise((resolve, reject) => {
