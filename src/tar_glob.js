@@ -4,9 +4,9 @@ const
   tar = require('tar-stream'),
   { createGzip } = require('zlib'),
   { pipeline } = require('stream'),
-  { createReadStream, stat } = require('fs'),
+  { createReadStream, lstat, readlink } = require('fs'),
   { join: joinPath } = require('path'),
-  { always, noop, at } = require('lodash/fp');
+  { always, noop, partial } = require('lodash/fp');
 
 const QUEUE_BUFFER = 1000;
 
@@ -34,19 +34,39 @@ module.exports = function({
             .map((relativePath)=> {
               const fullPath = joinPath(baseFolder, relativePath);
               return kefir
-                .fromNodeCallback((cb)=> stat(fullPath, cb))
-                .map(at(['size', 'mode']))
-                .flatMap(([fileSize, fileMode])=>{
-                  return kefir
-                    .fromPromise(
-                      new Promise((resolve, reject) => {
-                        pipeline(
-                          createReadStream(fullPath, { autoClose: true, emitClose: true }),
-                          pack.entry({ name: relativePath, size: fileSize, mode: fileMode }),
-                          (err, end)=> (err ? reject : resolve)(err || end)
-                        );
+                .fromNodeCallback((cb)=> lstat(fullPath, cb))
+                .flatMap((stat)=> stat
+                  .isSymbolicLink()
+                    ? kefir
+                        .fromNodeCallback((cb)=> readlink(fullPath, cb))
+                        .map((link)=> ({
+                          type: "link",
+                          link
+                        }))
+                    : kefir
+                      .constant({
+                        type: "file",
+                        size: stat["size"],
+                        mode: stat["mode"]
                       })
-                    )
+                )
+                .flatMap(({ size, mode, link, type }) => {
+                  return type === "file"
+                    ? kefir
+                      .fromNodeCallback(
+                        partial(
+                          pipeline,
+                          [
+                            createReadStream(fullPath, { autoClose: true, emitClose: true }),
+                            pack.entry({ type: "file", name: relativePath, size, mode })
+                          ]
+                        )
+                      )
+                    : (function(){
+                      console.log('Symlink', relativePath);
+                      pack.entry({ type: "symlink", name: relativePath, linkname: link });
+                      return kefir.never();
+                    })();
                 })
                 .map(always(relativePath))
             })

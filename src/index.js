@@ -9,7 +9,7 @@ const
   { fork } = require('child_process'),
   { createGunzip } = require('zlib'),
   { noop } = require('lodash/fp'),
-  { createWriteStream, mkdir } = require('fs'),
+  { createWriteStream, mkdir, symlink } = require('fs'),
   { join: joinPath, dirname } = require('path');
 
 const [isFork, filePattern, baseFolder] = process.argv.slice(2);
@@ -90,18 +90,24 @@ const beamDown = function({
   );
   
   tarStream.on('entry', function(header, stream, next) {
-    console.log(header.mode);
     stream.once('end', next);
+    
     kefir
       .concat([
         kefir.fromNodeCallback((cb)=> mkdir(joinPath(baseFolder, dirname(header.name)), { recursive: true }, cb)),
-        kefir.fromNodeCallback((cb)=> {
-          pipeline(
-            stream,
-            createWriteStream(joinPath(baseFolder, header.name), { mode: header.mode }),
-            cb
-          );
-        })
+        header.type === "file"
+          ? kefir
+              .fromNodeCallback((cb)=> {
+                pipeline(
+                  stream,
+                  createWriteStream(joinPath(baseFolder, header.name), { mode: header.mode }),
+                  cb
+                );
+              })
+          : (function(){
+            stream.resume();
+            return kefir.fromNodeCallback((cb)=> symlink(joinPath(baseFolder, header.name), header.linkname));
+          })()
       ])
       .onError(()=> console.error(header.name))
       .onValue(noop);
