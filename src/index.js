@@ -106,7 +106,7 @@ const beamDown = function({
               })
           : (function(){
             stream.resume();
-            return kefir.fromNodeCallback((cb)=> symlink(joinPath(baseFolder, header.name), header.linkname, cb));
+            return kefir.fromNodeCallback((cb)=> symlink(header.linkname, joinPath(baseFolder, header.name), cb));
           })()
       ])
       .onError(()=> console.error(header.name))
