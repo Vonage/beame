@@ -63,7 +63,6 @@ module.exports = function({
                         )
                       )
                     : (function(){
-                      console.log('Symlink', relativePath);
                       pack.entry({ type: "symlink", name: relativePath, linkname: link });
                       return kefir.never();
                     })();
