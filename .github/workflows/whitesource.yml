@@ -14,8 +14,8 @@ jobs:
         env:
           WHITESOURCE_PRODUCT_NAME: ${{ secrets.WHITESOURCE_PRODUCT_NAME }}
           WHITESOURCE_PROJECT_NAME: ${{ env.GITHUB_REPOSITORY }}
-          WHITESOURCE_GH_PAT: ${{ secrets.WHITESOURCE_GH_PAT }}
-          WHITESOURCE_CONFIG_REPO: ${{ secrets.WHITESOURCE_CONFIG_REPO }}
+          WHITESOURCE_GH_PAT: ${{ github.token }}
+          WHITESOURCE_CONFIG_REPO: Vonage/vbc-ws-configfiles
           WHITESOURCE_NPM_TOKEN: ${{ secrets.WHITESOURCE_NPM_TOKEN }}
           WHITESOURCE_API_KEY: ${{ secrets.WHITESOURCE_API_KEY }}
           WHITESOURCE_USER_KEY: ${{ secrets.WHITESOURCE_USER_KEY }}
